@@ -177,7 +177,7 @@ Your app will be available at:
 ```bash
 cd backend
 # If using venv: source venv/bin/activate
-uvicorn app.main:app --reload --port 8000
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 #### Start Frontend (in a new terminal)
