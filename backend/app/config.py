@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+asyncpg://localhost:5432/halfway"
+    database_url: str = "sqlite+aiosqlite:///./data/app.db"
     google_places_api_key: str = ""
     anthropic_api_key: str = ""
     base_url: str = "http://localhost:3000"

@@ -1,3 +1,8 @@
+export interface LatLng {
+  lat: number;
+  lng: number;
+}
+
 export interface SessionData {
   id: string;
   status:
@@ -20,8 +25,8 @@ export interface SessionData {
   winnerVenueId: string | null;
   pinCode: string | null;
   warning: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface VenueData {
@@ -42,6 +47,13 @@ export interface VenueData {
   vibeTags: string | null;
   bestFor: string | null;
   signatureDish: string | null;
+
+  // Review analysis fields
+  reviewSentiment: string | null;      // JSON: {positive: 0.7, neutral: 0.2, negative: 0.1}
+  standoutDishes: string | null;       // JSON: ["Dish 1", "Dish 2"]
+  reviewSummary: string | null;        // Plain text
+  reviewHighlights: string | null;     // JSON: ["Highlight 1", "Highlight 2"]
+  editorialSummary: string | null;     // Plain text from Google
 }
 
 export interface VoteData {
@@ -49,7 +61,35 @@ export interface VoteData {
   sessionId: string;
   venueId: string;
   voter: "user_a" | "user_b";
-  createdAt: string;
+  createdAt: Date;
+}
+
+export interface MidpointResult {
+  midpoint: LatLng;
+  travelTimeA: number;
+  travelTimeB: number;
+  warning?: string;
+}
+
+export interface GooglePlaceResult {
+  id: string;
+  displayName: { text: string };
+  formattedAddress?: string;
+  location: { latitude: number; longitude: number };
+  rating?: number;
+  userRatingCount?: number;
+  priceLevel?: string;
+  googleMapsUri?: string;
+  types?: string[];
+}
+
+export interface VenueEnrichment {
+  name: string;
+  description: string;
+  cuisineTags: string[];
+  vibeTags: string[];
+  bestFor: string[];
+  signatureDish: string;
 }
 
 export interface SessionWithVenuesAndVotes extends SessionData {

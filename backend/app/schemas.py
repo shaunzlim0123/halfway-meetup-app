@@ -77,6 +77,13 @@ class VenueOut(CamelModel):
     best_for: str | None
     signature_dish: str | None
 
+    # Review analysis fields
+    review_sentiment: str | None
+    standout_dishes: str | None
+    review_summary: str | None
+    review_highlights: str | None
+    editorial_summary: str | None
+
 
 class VoteOut(CamelModel):
     id: str

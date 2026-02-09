@@ -80,10 +80,18 @@ async def compute_midpoint(
         except Exception as venue_err:
             logger.error("Venue search failed: %s", venue_err)
 
-        # Stage 3: Enrich venues with AI
+        # Stage 3: Analyze reviews with AI
+        review_analyses: dict[str, dict] = {}
+        try:
+            from app.services.review_analysis import analyze_reviews_with_ai
+            review_analyses = await analyze_reviews_with_ai(raw_venues)
+        except Exception as review_err:
+            logger.warning("Review analysis failed, using basic enrichment: %s", review_err)
+
+        # Stage 4: Enrich venues with AI (incorporating review data)
         enrichments: dict[str, dict] = {}
         try:
-            enrichments = await enrich_venues(raw_venues)
+            enrichments = await enrich_venues(raw_venues, review_analyses)
         except Exception as enrich_err:
             logger.error("Venue enrichment failed: %s", enrich_err)
 
@@ -91,6 +99,12 @@ async def compute_midpoint(
         for venue in raw_venues:
             name = venue.get("displayName", {}).get("text", "")
             enrichment = enrichments.get(name)
+            review_analysis = review_analyses.get(name)
+
+            # Extract and cache reviews (top 5)
+            raw_reviews = venue.get("reviews", [])[:5]
+            reviews_json = json.dumps(raw_reviews) if raw_reviews else None
+
             db.add(
                 Venue(
                     id=generate_id(),
@@ -116,6 +130,27 @@ async def compute_midpoint(
                         json.dumps(enrichment["bestFor"]) if enrichment and enrichment.get("bestFor") else None
                     ),
                     signature_dish=enrichment.get("signatureDish") if enrichment else None,
+                    # Review analysis fields
+                    review_sentiment=(
+                        json.dumps(review_analysis["sentiment"])
+                        if review_analysis and review_analysis.get("sentiment")
+                        else None
+                    ),
+                    standout_dishes=(
+                        json.dumps(review_analysis["standoutDishes"])
+                        if review_analysis and review_analysis.get("standoutDishes")
+                        else None
+                    ),
+                    review_summary=review_analysis.get("reviewSummary") if review_analysis else None,
+                    review_highlights=(
+                        json.dumps(review_analysis["highlights"])
+                        if review_analysis and review_analysis.get("highlights")
+                        else None
+                    ),
+                    editorial_summary=(
+                        venue.get("editorialSummary", {}).get("text") if venue.get("editorialSummary") else None
+                    ),
+                    raw_reviews_cache=reviews_json,
                 )
             )
 

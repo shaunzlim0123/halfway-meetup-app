@@ -48,5 +48,4 @@ GOOGLE_MAPS_SETUP.md
 # CI/CD
 .github
 
-# Backend files (not needed in frontend build)
-backend
+# Backend files (not needed in frontend build - now in separate directory)

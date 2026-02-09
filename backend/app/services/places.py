@@ -36,7 +36,8 @@ async def _search_nearby(center: LatLng, radius: float) -> list[dict[str, Any]]:
                 "X-Goog-FieldMask": (
                     "places.id,places.displayName,places.formattedAddress,"
                     "places.location,places.rating,places.userRatingCount,"
-                    "places.priceLevel,places.googleMapsUri,places.types"
+                    "places.priceLevel,places.googleMapsUri,places.types,"
+                    "places.reviews,places.editorialSummary"
                 ),
             },
             json={

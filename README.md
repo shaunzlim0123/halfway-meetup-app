@@ -15,18 +15,21 @@ A smart web application that helps two friends find a **fair meeting location** 
 ## Tech Stack
 
 ### Frontend
+
 - **Next.js 15.1** with App Router
 - **React 19.0** with TypeScript 5.7
 - **Tailwind CSS 3.4** for styling
 - **React Google Maps API** for map visualization
 
 ### Backend
+
 - **FastAPI** (Python 3.11+)
 - **SQLAlchemy 2.0** with async PostgreSQL support
 - **Anthropic SDK** for Claude AI integration
 - **HTTPX** for async HTTP requests
 
 ### External APIs
+
 - **Google Maps Platform** (Maps JavaScript API, Places API, Geocoding API, Distance Matrix API)
 - **Anthropic Claude API**
 
@@ -108,7 +111,7 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 #### Frontend Environment Variables
 
-Create `.env.local`:
+Create `frontend/.env.local`:
 
 ```bash
 # Google Maps API (client-side)
@@ -124,24 +127,26 @@ NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 ### 5. Install Dependencies
 
 #### Frontend
+
 ```bash
+cd frontend
 npm install
 ```
 
 #### Backend
+
 ```bash
 cd backend
 pip install -e .
-cd ..
 ```
 
 Or use a virtual environment (recommended):
+
 ```bash
 cd backend
 python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e .
-cd ..
 ```
 
 ## Running Locally
@@ -160,6 +165,7 @@ docker-compose down
 ```
 
 Your app will be available at:
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
@@ -167,6 +173,7 @@ Your app will be available at:
 ### Option 2: Run Manually
 
 #### Start Backend
+
 ```bash
 cd backend
 # If using venv: source venv/bin/activate
@@ -174,7 +181,9 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 #### Start Frontend (in a new terminal)
+
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -182,7 +191,7 @@ Visit http://localhost:3000
 
 ## Deployment
 
-This project uses Docker Compose for easy deployment. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions on deploying to AWS EC2 with automated GitHub Actions CI/CD.
+This project uses Docker Compose for easy deployment to AWS EC2 with automated GitHub Actions CI/CD.
 
 ### Quick Deployment Steps:
 
@@ -196,6 +205,7 @@ This project uses Docker Compose for easy deployment. See [DEPLOYMENT.md](./DEPL
 ```
 halfway-meetup-app/
 ├── backend/                      # FastAPI backend
+│   ├── Dockerfile               # Backend container
 │   └── app/
 │       ├── main.py              # FastAPI app & CORS config
 │       ├── config.py            # Environment settings
@@ -213,25 +223,32 @@ halfway-meetup-app/
 │           ├── midpoint.py      # Fair midpoint algorithm
 │           ├── places.py        # Venue search
 │           └── venue_enrichment.py  # Claude AI enrichment
-├── src/                         # Next.js frontend
-│   ├── app/
-│   │   ├── page.tsx            # Homepage
-│   │   └── session/[id]/
-│   │       ├── page.tsx        # Session page
-│   │       └── vote/
-│   │           └── page.tsx    # Voting page
-│   ├── components/             # React components
-│   │   ├── MapDisplay.tsx      # Interactive map
-│   │   ├── MapPinDrop.tsx      # Pin drop interface
-│   │   ├── VenueCard.tsx       # Venue details
-│   │   ├── VenueList.tsx       # Venue list
-│   │   ├── SessionStatus.tsx   # Status indicator
-│   │   └── ShareLink.tsx       # Share functionality
-│   └── hooks/
-│       └── useSessionPolling.ts  # Real-time updates
+├── frontend/                    # Next.js frontend
+│   ├── Dockerfile               # Frontend container
+│   ├── package.json             # Node.js dependencies
+│   ├── next.config.ts           # Next.js configuration
+│   ├── tsconfig.json            # TypeScript configuration
+│   ├── tailwind.config.ts       # Tailwind CSS configuration
+│   └── src/
+│       ├── app/
+│       │   ├── page.tsx            # Homepage
+│       │   └── session/[id]/
+│       │       ├── page.tsx        # Session page
+│       │       └── vote/
+│       │           └── page.tsx    # Voting page
+│       ├── components/             # React components
+│       │   ├── MapDisplay.tsx      # Interactive map
+│       │   ├── MapPinDrop.tsx      # Pin drop interface
+│       │   ├── VenueCard.tsx       # Venue details
+│       │   ├── VenueList.tsx       # Venue list
+│       │   ├── SessionStatus.tsx   # Status indicator
+│       │   └── ShareLink.tsx       # Share functionality
+│       ├── hooks/
+│       │   └── useSessionPolling.ts  # Real-time updates
+│       └── lib/
+│           ├── constants.ts        # App constants
+│           └── types.ts            # TypeScript types
 ├── docker-compose.yml           # Docker orchestration
-├── Dockerfile                   # Frontend container
-├── backend/Dockerfile           # Backend container
 └── .github/workflows/
     └── deploy.yml              # Auto-deployment workflow
 ```
@@ -239,18 +256,21 @@ halfway-meetup-app/
 ## How It Works
 
 ### 1. User A Creates Session
+
 - Drops a pin on the map at their location
 - Backend validates the location using Google Geocoding API (snaps to nearest road)
 - Creates a session with a unique ID and 4-digit PIN code
 - Receives a shareable URL
 
 ### 2. User B Joins Session
+
 - Opens the shared link
 - Enters the PIN code to verify access
 - Drops a pin at their location
 - Backend validates and updates session status to "ready_to_compute"
 
 ### 3. Fair Midpoint Calculation
+
 The app doesn't just calculate the geographic center—it adjusts for real-world travel times:
 
 1. **Calculate geographic midpoint** (simple average of coordinates)
@@ -261,6 +281,7 @@ The app doesn't just calculate the geographic center—it adjusts for real-world
 This ensures both friends have **equal travel burden**, not just equal distance.
 
 ### 4. Venue Discovery
+
 - Searches for restaurants/cafes near the fair midpoint (starting at 800m radius)
 - Filters by quality: 4.0+ stars, 50+ reviews (relaxed to 3.8+, 30+ if needed)
 - Expands search radius up to 3km if insufficient venues found
@@ -268,7 +289,9 @@ This ensures both friends have **equal travel burden**, not just equal distance.
 - Returns top 8 venues
 
 ### 5. AI Enrichment
+
 Each venue is enhanced using Claude AI to generate:
+
 - **Description**: What makes this place special
 - **Cuisine tags**: e.g., "Japanese", "Ramen", "Casual"
 - **Vibe tags**: e.g., "Cozy", "Date night", "Lively"
@@ -276,6 +299,7 @@ Each venue is enhanced using Claude AI to generate:
 - **Signature dish**: Recommended item to try
 
 ### 6. Collaborative Voting
+
 - Both users see the map with their locations, the midpoint, and venue markers
 - Click on venues to view detailed cards with AI-generated information
 - Each user votes for their preferred venue
@@ -291,21 +315,26 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 ### Key Endpoints
 
 #### Sessions
+
 - `POST /api/sessions` - Create a new session
 - `GET /api/sessions/{session_id}` - Get session details
 
 #### Join
+
 - `POST /api/sessions/{session_id}/join` - Join an existing session
 
 #### Compute
+
 - `POST /api/sessions/{session_id}/compute` - Calculate midpoint and find venues
 
 #### Vote
+
 - `POST /api/sessions/{session_id}/vote` - Submit a vote for a venue
 
 ## Database Schema
 
 ### Sessions Table
+
 - Stores user locations (A and B)
 - Fair midpoint coordinates
 - Session status (waiting_for_b → ready_to_compute → computing → voting → completed)
@@ -313,27 +342,32 @@ Once the backend is running, visit http://localhost:8000/docs for interactive AP
 - PIN code and winner information
 
 ### Venues Table
+
 - Google Place details (name, address, rating, etc.)
 - AI-generated enrichment data
 - Linked to parent session
 
 ### Votes Table
+
 - User votes (user_a or user_b)
 - Linked to session and venue
 
 ## Development Tips
 
 ### Running Tests
+
 ```bash
 # Backend tests
 cd backend
 pytest
 
 # Frontend tests
+cd frontend
 npm test
 ```
 
 ### Viewing Database
+
 ```bash
 # If using PostgreSQL
 psql -h localhost -U your_user -d halfway_db
@@ -343,28 +377,34 @@ sqlite3 backend/data/app.db
 ```
 
 ### Hot Reload
+
 Both frontend and backend support hot reload in development mode:
+
 - Frontend: Changes trigger automatic rebuilds
 - Backend: `uvicorn --reload` restarts on code changes
 
 ## Troubleshooting
 
 ### Google Maps not loading
-- Verify `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is set in `.env.local`
+
+- Verify `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is set in `frontend/.env.local`
 - Check that Maps JavaScript API is enabled in Google Cloud Console
 - Ensure API restrictions allow your domain (localhost:3000 for development)
 
 ### Backend can't connect to database
+
 - Verify `DATABASE_URL` is correct in `backend/.env`
 - For PostgreSQL: Ensure the database exists and is running
 - For SQLite: Directory `backend/data/` will be created automatically
 
 ### Claude AI enrichment failing
+
 - Verify `ANTHROPIC_API_KEY` is valid
 - Check API quota in Anthropic Console
 - App will gracefully degrade without enrichment if Claude is unavailable
 
 ### Port already in use
+
 ```bash
 # Find what's using the port
 lsof -i :3000  # or :8000

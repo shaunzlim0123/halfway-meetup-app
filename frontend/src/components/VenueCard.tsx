@@ -19,6 +19,15 @@ function parseTags(json: string | null): string[] {
   }
 }
 
+function parseJSON<T>(json: string | null, fallback: T): T {
+  if (!json) return fallback;
+  try {
+    return JSON.parse(json);
+  } catch {
+    return fallback;
+  }
+}
+
 function getPriceLevelDisplay(level: string | null): string {
   switch (level) {
     case "PRICE_LEVEL_INEXPENSIVE":
@@ -45,6 +54,15 @@ export default function VenueCard({
   const vibeTags = parseTags(venue.vibeTags);
   const bestFor = parseTags(venue.bestFor);
   const priceDisplay = getPriceLevelDisplay(venue.priceLevel);
+
+  // Parse review data
+  const reviewSentiment = parseJSON<{positive: number, neutral: number, negative: number}>(
+    venue.reviewSentiment,
+    {positive: 0, neutral: 0, negative: 0}
+  );
+  const standoutDishes = parseJSON<string[]>(venue.standoutDishes, []);
+  const reviewHighlights = parseJSON<string[]>(venue.reviewHighlights, []);
+  const sentimentScore = reviewSentiment.positive;
 
   return (
     <div
@@ -78,11 +96,53 @@ export default function VenueCard({
         </div>
       </div>
 
+      {/* Sentiment Badge */}
+      {sentimentScore > 0 && (
+        <span className={`text-xs px-2 py-0.5 rounded-full inline-block mb-2 ${
+          sentimentScore > 0.6 ? 'bg-mint/20 text-mint' :
+          sentimentScore > 0.4 ? 'bg-yellow-500/20 text-yellow-600' :
+          'bg-red-500/20 text-red-600'
+        }`}>
+          {sentimentScore > 0.6 ? '😊 Loved by diners' :
+           sentimentScore > 0.4 ? '😐 Mixed reviews' :
+           '😕 Some concerns'}
+        </span>
+      )}
+
       {venue.description && (
         <p className="text-sm text-text-secondary mb-3">{venue.description}</p>
       )}
 
-      {venue.signatureDish && (
+      {/* Review Summary */}
+      {venue.reviewSummary && (
+        <div className="mb-3 p-3 bg-mint/5 rounded-lg border border-mint/20">
+          <p className="text-xs font-semibold text-mint mb-1">
+            💬 What Diners Say:
+          </p>
+          <p className="text-sm text-text-secondary italic">
+            &quot;{venue.reviewSummary}&quot;
+          </p>
+        </div>
+      )}
+
+      {/* Standout Dishes from Reviews */}
+      {standoutDishes.length > 0 && (
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-text-muted mb-1">
+            🍽️ Must-Try Dishes (from reviews):
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {standoutDishes.map((dish) => (
+              <span key={dish} className="px-2 py-1 bg-saffron/20 text-saffron text-sm rounded-md font-medium">
+                {dish}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Fallback: AI-generated signature dish if no reviews */}
+      {standoutDishes.length === 0 && venue.signatureDish && (
         <p className="text-sm text-saffron-dim mb-3">
           <span className="font-medium">Likely known for:</span>{" "}
           {venue.signatureDish}
@@ -110,6 +170,17 @@ export default function VenueCard({
               className="px-2 py-0.5 bg-mint/15 text-mint text-xs rounded-full"
             >
               {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Review Highlights */}
+      {reviewHighlights.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {reviewHighlights.map((highlight) => (
+            <span key={highlight} className="px-2 py-0.5 bg-purple-500/15 text-purple-600 text-xs rounded-full">
+              ✨ {highlight}
             </span>
           ))}
         </div>

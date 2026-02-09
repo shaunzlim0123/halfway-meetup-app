@@ -50,6 +50,14 @@ class Venue(Base):
     best_for: Mapped[str | None] = mapped_column(Text, nullable=True)
     signature_dish: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+    # Review analysis fields
+    review_sentiment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    standout_dishes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    review_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    review_highlights: Mapped[str | None] = mapped_column(Text, nullable=True)
+    editorial_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    raw_reviews_cache: Mapped[str | None] = mapped_column(Text, nullable=True)
+
 
 class Vote(Base):
     __tablename__ = "votes"

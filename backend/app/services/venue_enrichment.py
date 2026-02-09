@@ -39,6 +39,7 @@ def _build_user_message(venues: list[dict[str, Any]]) -> str:
 
 async def enrich_venues(
     venues: list[dict[str, Any]],
+    review_analyses: dict[str, dict] | None = None,
 ) -> dict[str, dict[str, Any]]:
     enrichment_map: dict[str, dict[str, Any]] = {}
 
