@@ -2,6 +2,26 @@
 
 A smart web application that helps two friends find a **fair meeting location** and choose where to eat. Unlike simple geographic midpoint calculators, this app uses public transit travel times to ensure both users have **equal travel burden**, then discovers and enriches nearby restaurants with AI-generated descriptions.
 
+## Demo
+
+See the app in action! Here's a complete walkthrough of the Halfway Meetup experience:
+
+[Part 1: Session Creation](demo-videos/halfway-demo-part1.mp4)
+
+Watch as User A drops their location pin and creates a shareable session.
+
+### Part 2: Joining & Computing
+
+[Part 2: Joining & Computing](demo-videos/halfway-demo-part2.mp4)
+
+User B joins the session, and the app calculates the fair midpoint based on equal travel times.
+
+### Part 3: Venue Discovery & Voting
+
+[Part 3: Voting](demo-videos/halfway-demo-part3.mp4)
+
+Both users explore AI-enriched venue recommendations and vote on their favorite spot.
+
 ## Features
 
 - **Fair Midpoint Calculation**: Finds the geographic midpoint between two locations and intelligently adjusts it based on public transit travel times to ensure equal travel burden for both users
@@ -430,7 +450,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Google Maps Platform for location services
 - Anthropic Claude for AI-powered venue enrichment
 - FastAPI and Next.js communities for excellent documentation
-
----
-
-**Built with ❤️ to help friends meet halfway**
