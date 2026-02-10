@@ -6,15 +6,15 @@ A smart web application that helps two friends find a **fair meeting location** 
 
 See the app in action! Here's a complete walkthrough of the Halfway Meetup experience:
 
-[Part 1: Session Creation](demo-videos/halfway-demo-part1.gif)
+![Part 1: Session Creation](demo-videos/halfway-demo-part1.gif)
 
 Watch as User A drops their location pin and creates a shareable session.
 
-[Part 2: Joining & Computing](demo-videos/halfway-demo-part2.gif)
+![Part 2: Joining & Computing](demo-videos/halfway-demo-part2.gif)
 
 User B joins the session, and the app calculates the fair midpoint based on equal travel times.
 
-[Part 3: Voting](demo-videos/halfway-demo-part3.gif)
+![Part 3: Voting](demo-videos/halfway-demo-part3.gif)
 
 Both users explore AI-enriched venue recommendations and vote on their favorite spot.
 
