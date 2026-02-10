@@ -22,7 +22,7 @@ User B joins using the shared link and PIN, then drops their location pin. The a
 
 ![Part 3: Voting](demo-videos/halfway-demo-part3.gif)
 
-Both users explore curated restaurant recommendations near the midpoint, each enriched with AI-generated descriptions, cuisine tags, vibes, and signature dishes. After reviewing the options on an interactive map, both friends vote and the app reveals the winning venue with direct navigation links.
+Both users explore curated restaurant recommendations near the midpoint, each enriched with AI-generated descriptions, cuisine tags, vibes, and signature dishes. After reviewing the options on an interactive map, both friends vote.
 
 ## Features
 
